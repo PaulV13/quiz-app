@@ -233,14 +233,14 @@ const Game = () => {
           {time}
         </Text>
       </Box>
-      <Text color="#eee" fontSize="18px" m={4}>
+      <Text textAlign="center" color="#eee" fontSize="18px" m={4}>
         {question && question.question}
       </Text>
       {question &&
         question.answers.map((ans, index) => {
           return (
             <Box
-              width="450px"
+              width={200}
               p="10px"
               m="10px 0"
               background={
