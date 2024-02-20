@@ -1,13 +1,17 @@
-import { Box, Button, Input, Text } from "@chakra-ui/react";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useGameStore } from "../../store/store";
+import { Box, Button, Input, Text, useToast } from "@chakra-ui/react";
 import CustomButton from "../../components/CustomButton/CustomButton";
 
 const EndGame = () => {
-  const [score, setScore] = useState(0);
+  const score = useGameStore((state) => state.score);
+  const resetScore = useGameStore((state) => state.resetScore);
+  const toast = useToast();
+
   const [name, setName] = useState("");
   const [players, setPlayers] = useState([]);
-  const [message, setMessage] = useState("");
+
   let navigate = useNavigate();
 
   useEffect(() => {
@@ -16,37 +20,38 @@ const EndGame = () => {
     if (localstorageplayers !== null) {
       setPlayers(JSON.parse(localstorageplayers));
     }
-
-    const newScore = window.localStorage.getItem("score");
-    if (newScore !== null) {
-      setScore(newScore);
-    }
   }, []);
 
-  useEffect(() => {
-    const localStarting = window.localStorage.getItem("starting");
-    if (localStarting === "false") {
-      navigate("/");
-    }
-  }, []);
-
-  const handleChange = (e) => {
+  const handleChangeNameUser = (e) => {
     setName(e.target.value);
   };
 
-  const handleSubmit = () => {
+  const handleSaveUserScore = () => {
+    if (name.trim() === "") {
+      toast({
+        title: "Debe ingrese su nombre!!!",
+        status: "error",
+        duration: 1000,
+        isClosable: false,
+        position: "bottom-right",
+      });
+      return;
+    }
     const newPlayer = {
       name,
       score,
     };
     const newPlayers = players.concat(newPlayer);
     window.localStorage.setItem("players", JSON.stringify(newPlayers));
-    setMessage("Guardado correctamente!!!");
-    setName("");
-    setScore(0);
-    setTimeout(() => {
-      navigate("/ranking");
-    }, 1000);
+    toast({
+      title: "Nombre guardado correctamente!!!",
+      status: "success",
+      duration: 500,
+      isClosable: false,
+      position: "bottom-right",
+    });
+    resetScore();
+    navigate("/");
   };
 
   return (
@@ -68,17 +73,12 @@ const EndGame = () => {
       <Box display="flex" flexDirection="column">
         <Input
           my={4}
-          h="30px"
-          lineHeight="30px"
-          color="#eee"
-          p="2px"
-          fontSize="14px"
-          className="input"
           type="text"
           value={name}
-          placeholder="Enter a name..."
-          onChange={handleChange}
-        ></Input>
+          color={"#eee"}
+          placeholder="Ingrese su nombre..."
+          onChange={handleChangeNameUser}
+        />
         <Box display="flex" flexDirection="row">
           <Button
             display="inline-block"
@@ -93,16 +93,13 @@ const EndGame = () => {
             cursor="pointer"
             variant="link"
             _hover={{ textDecoration: "none", background: "#ccc" }}
-            onClick={handleSubmit}
+            onClick={handleSaveUserScore}
           >
             Guardar
           </Button>
           <CustomButton text="Volver Inicio" to="/" />
         </Box>
       </Box>
-      <Text h="50px" color="#eee" fontSize="18px">
-        {message}
-      </Text>
     </Box>
   );
 };

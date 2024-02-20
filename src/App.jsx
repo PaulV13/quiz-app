@@ -1,10 +1,10 @@
+import { Routes, Route } from "react-router-dom";
+import { Container } from "@chakra-ui/react";
 import Game from "./pages/Game/Game";
 import Home from "./pages/Home/Home";
 import Ranking from "./pages/Ranking/Ranking";
-import { Routes, Route } from "react-router-dom";
 import EndGame from "./pages/EndGame/EndGame";
 import "./App.css";
-import { Container } from "@chakra-ui/react";
 
 const App = () => {
   return (

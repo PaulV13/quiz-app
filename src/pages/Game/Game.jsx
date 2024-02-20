@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Text } from "@chakra-ui/react";
+import { useGameStore } from "../../store/store";
 
 const questions = [
   {
@@ -135,18 +136,20 @@ const questions = [
 ];
 
 const Game = () => {
-  const [time, setTime] = useState(30);
+  const score = useGameStore((state) => state.score);
+  const increaseScore = useGameStore((state) => state.increaseScore);
+
+  const [intervalId, setIntervalId] = useState(0);
+  const [timeoutId, setTimeoutId] = useState(0);
+  const [time, setTime] = useState(10);
   const [questionsRandoms, setQuestionRandoms] = useState([]);
   const [question, setQuestion] = useState(null);
   const [numberQuestion, setNumberQuestion] = useState(1);
-  const [intervalId, setIntervalId] = useState(0);
-  const [correct, setCorrect] = useState(null);
-  const [response, setResponse] = useState(null);
-  const [score, setScore] = useState(0);
+  const [userResponse, setUserResponse] = useState(null);
+
   let navigate = useNavigate();
 
   useEffect(() => {
-    window.localStorage.setItem("starting", true);
     const intervalId = setInterval(() => {
       setTime((time) => time - 1);
     }, 1000);
@@ -157,12 +160,6 @@ const Game = () => {
   }, []);
 
   useEffect(() => {
-    if (time === 0) {
-      result();
-    }
-  }, [time]);
-
-  useEffect(() => {
     var questionAleatorias = questions.sort(() => {
       return Math.random() - 0.5;
     });
@@ -170,34 +167,37 @@ const Game = () => {
     setQuestion(questionAleatorias[0]);
   }, []);
 
-  const result = () => {
-    setCorrect(question.correct);
-    setTimeout(() => {
-      setCorrect(null);
-      setResponse(null);
-      setTime(30);
-      setQuestion(questionsRandoms[numberQuestion]);
-      setNumberQuestion((numberQuestion) => numberQuestion + 1);
-    }, 1000);
-  };
-
-  const handleAnswer = (ans) => {
-    setResponse(ans);
-    if (ans === question.correct) {
-      setScore((score) => score + time);
-      result();
-    } else {
+  useEffect(() => {
+    if (time === 0) {
       result();
     }
-  };
+  }, [time]);
 
   useEffect(() => {
-    if (numberQuestion == 11) {
+    if (numberQuestion === 11) {
       clearInterval(intervalId);
-      window.localStorage.setItem("score", score);
+      clearTimeout(timeoutId);
       navigate("/endgame");
     }
   }, [numberQuestion]);
+
+  const result = () => {
+    const timeoutId = setTimeout(() => {
+      setUserResponse(null);
+      setTime(10);
+      setQuestion(questionsRandoms[numberQuestion]);
+      setNumberQuestion((numberQuestion) => numberQuestion + 1);
+    }, 1000);
+    setTimeoutId(timeoutId);
+  };
+
+  const handleAnswer = (ans) => {
+    setUserResponse(ans);
+    if (ans === question.correct) {
+      increaseScore(time);
+    }
+    result();
+  };
 
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
@@ -217,9 +217,9 @@ const Game = () => {
         <Box
           position="absolute"
           bottom="0px"
-          backgroundColor={time > 10 ? "green" : "red"}
+          backgroundColor={time > 4 ? "green" : "red"}
           w="120px"
-          h={`${time * 4}px`}
+          h={`${time * 12}px`}
           transition={`height 1s`}
         />
         <Text
@@ -233,36 +233,39 @@ const Game = () => {
           {time}
         </Text>
       </Box>
-      <Text textAlign="center" color="#eee" fontSize="18px" m={4}>
-        {question && question.question}
-      </Text>
-      {question &&
-        question.answers.map((ans, index) => {
-          return (
-            <Box
-              width={200}
-              p="10px"
-              m="10px 0"
-              background={
-                correct === null
-                  ? "#eee"
-                  : index === correct
-                  ? "green"
-                  : index === response
-                  ? "red"
-                  : "#eee"
-              }
-              cursor="pointer"
-              textAlign="center"
-              borderRadius="4px"
-              border="4px solid #555"
-              key={index}
-              onClick={() => handleAnswer(index)}
-            >
-              {ans}
-            </Box>
-          );
-        })}
+      {question ? (
+        <Text textAlign="center" color="#eee" fontSize="18px" m={4}>
+          {question.question}
+        </Text>
+      ) : null}
+
+      {question
+        ? question.answers.map((ans, index) => {
+            return (
+              <Box
+                width={400}
+                p="10px"
+                m="10px 0"
+                background={
+                  userResponse !== null && index === question.correct
+                    ? "green"
+                    : userResponse === index
+                    ? "red"
+                    : "#eee"
+                }
+                cursor="pointer"
+                textAlign="center"
+                borderRadius="4px"
+                border="4px solid #555"
+                key={index}
+                onClick={() => handleAnswer(index)}
+              >
+                {ans}
+              </Box>
+            );
+          })
+        : null}
+
       <Text m={2} color="#eee" fontSize="18px" fontWeight="bold">
         Puntaje: {score}
       </Text>

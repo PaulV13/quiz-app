@@ -1,13 +1,7 @@
-import { useEffect } from "react";
-import CustomButton from "../../components/CustomButton/CustomButton";
 import { Box, Text } from "@chakra-ui/react";
+import CustomButton from "../../components/CustomButton/CustomButton";
 
 const Home = () => {
-  useEffect(() => {
-    window.localStorage.setItem("starting", false);
-    window.localStorage.setItem("score", 0);
-  }, []);
-
   return (
     <Box
       h="250px"
