@@ -12,9 +12,9 @@ const App = () => {
       <Container
         maxW="xl"
         justifyContent="center"
-        alignitems="center"
+        alignItems="center"
         h="100vh"
-        centerContent
+        centerContent={true}
       >
         <Routes>
           <Route path="/" element={<Home />} />

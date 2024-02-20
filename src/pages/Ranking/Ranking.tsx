@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { Box, Flex, Text } from "@chakra-ui/react";
 import CustomButton from "../../components/CustomButton/CustomButton";
+import { Player } from "../../types";
 
 const Ranking = () => {
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState<Player[]>([]);
 
-  const sortPlayers = (players) => {
+  const sortPlayers = (players: Player[]) => {
     const p = players
       .sort((a, b) => {
         const aScore = a.score;

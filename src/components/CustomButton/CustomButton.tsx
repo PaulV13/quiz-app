@@ -1,7 +1,7 @@
 import { Link } from "@chakra-ui/react";
 import { Link as RouterLink } from "react-router-dom";
 
-const CustomButton = ({ text, to }) => {
+const CustomButton = ({ text, to }: { text: string; to: string }) => {
   return (
     <Link
       as={RouterLink}

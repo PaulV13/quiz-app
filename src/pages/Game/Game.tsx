@@ -2,41 +2,41 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Box, Text } from "@chakra-ui/react";
 import { useGameStore } from "../../store/store";
+import { Question } from "../../types";
 
-const questions = [
+const questions: Question[] = [
   {
-    question: "¿Cuál de las siguientes opciones no es una casa de Hogwarts?",
+    text: "¿Cuál de las siguientes opciones no es una casa de Hogwarts?",
     answers: ["Dumbledore", "Slytherin", "Hufflepuff"],
     correct: 0,
   },
   {
-    question: "¿Quién es Dumbledore?",
+    text: "¿Quién es Dumbledore?",
     answers: ["El padre de Harry", "Una fuerza malvada", "El director"],
     correct: 2,
   },
   {
-    question:
-      "¿Sabes qué personaje se supone que debía morir en la saga pero no murió?",
+    text: "¿Sabes qué personaje se supone que debía morir en la saga pero no murió?",
     answers: ["Hermione", "Arthur Weasly", "Harry"],
     correct: 1,
   },
   {
-    question: "¿Quién es el mejor fabricante de varitas en el mundo mágico?",
+    text: "¿Quién es el mejor fabricante de varitas en el mundo mágico?",
     answers: ["Ollivanders", "Jimmy Kiddell", "Johannes Jonker"],
     correct: 0,
   },
   {
-    question: "Quien es el padre de Harry?",
+    text: "Quien es el padre de Harry?",
     answers: ["James Sirius Potter", "Albus Severus Potter", "James Potter"],
     correct: 2,
   },
   {
-    question: "¿Quién es el profesor de pociones en Hogwarts?",
+    text: "¿Quién es el profesor de pociones en Hogwarts?",
     answers: ["Severus Snape", "Dumbledore", "Poppy Pomfrey"],
     correct: 0,
   },
   {
-    question: "¿Quién es Voldemort?",
+    text: "¿Quién es Voldemort?",
     answers: [
       "El enemigo de Harry",
       "El mejor amigo de Ron",
@@ -45,17 +45,17 @@ const questions = [
     correct: 0,
   },
   {
-    question: "¿Cuántos años tenía Harry cuándo descubrió que era un mago?",
+    text: "¿Cuántos años tenía Harry cuándo descubrió que era un mago?",
     answers: ["5", "11", "20"],
     correct: 1,
   },
   {
-    question: "¿Harry es amigo de cuál de los siguientes personajes?",
+    text: "¿Harry es amigo de cuál de los siguientes personajes?",
     answers: ["Lord Voldemort", "Hermione", "John Dawlish"],
     correct: 1,
   },
   {
-    question: "¿Qué era el ejército de Dumbledore?",
+    text: "¿Qué era el ejército de Dumbledore?",
     answers: [
       "Una organizacion",
       "Un libro",
@@ -64,7 +64,7 @@ const questions = [
     correct: 0,
   },
   {
-    question: "¿Qué es la varita de saúco?",
+    text: "¿Qué es la varita de saúco?",
     answers: [
       "La varita de Hermonie",
       "Una varita prohibida",
@@ -73,17 +73,17 @@ const questions = [
     correct: 2,
   },
   {
-    question: "¿Quién transforma a Remus en hombre lobo?",
+    text: "¿Quién transforma a Remus en hombre lobo?",
     answers: ["Greyback", "Harry", "Voldemort"],
     correct: 0,
   },
   {
-    question: "¿Con qué personaje comparte cumpleaños la autora J. K. Rowling?",
+    text: "¿Con qué personaje comparte cumpleaños la autora J. K. Rowling?",
     answers: ["Ron", "Harry", "Hermione"],
     correct: 1,
   },
   {
-    question: "¿Cuál fue el primer libro de la saga de Harry Potter?",
+    text: "¿Cuál fue el primer libro de la saga de Harry Potter?",
     answers: [
       "Harry potter y el caliz de fuego",
       "Harry Potter y la piedra filosofal",
@@ -92,12 +92,12 @@ const questions = [
     correct: 1,
   },
   {
-    question: "¿Qué juego se practica durante toda la saga?",
+    text: "¿Qué juego se practica durante toda la saga?",
     answers: ["Quidditch", "Tenis", "Hockey"],
     correct: 0,
   },
   {
-    question: "¿Qué libro es el último de la saga?",
+    text: "¿Qué libro es el último de la saga?",
     answers: [
       "Harry Potter y el prisionero de Azkaban",
       "Harry Potter y las reliquias de la muerte",
@@ -106,7 +106,7 @@ const questions = [
     correct: 1,
   },
   {
-    question: "¿Quién era Myrtle la llorona?",
+    text: "¿Quién era Myrtle la llorona?",
     answers: [
       "Una fantasma",
       "La cómplice de Voldemort",
@@ -115,7 +115,7 @@ const questions = [
     correct: 0,
   },
   {
-    question: "¿Qué hacía el pensadero?",
+    text: "¿Qué hacía el pensadero?",
     answers: [
       "Aumentaba los ataques de los magos",
       "Le daba a Voldemort más poder",
@@ -124,12 +124,12 @@ const questions = [
     correct: 2,
   },
   {
-    question: "¿En que fecha especial nació Fred Weasley?",
+    text: "¿En que fecha especial nació Fred Weasley?",
     answers: ["Día de los inocentes", "Navidad", "Año nuevo"],
     correct: 0,
   },
   {
-    question: "¿De qué esta hecha la varita de Tom Riddle?",
+    text: "¿De qué esta hecha la varita de Tom Riddle?",
     answers: ["Ocre", "Tejo", "Maple"],
     correct: 1,
   },
@@ -142,10 +142,10 @@ const Game = () => {
   const [intervalId, setIntervalId] = useState(0);
   const [timeoutId, setTimeoutId] = useState(0);
   const [time, setTime] = useState(10);
-  const [questionsRandoms, setQuestionRandoms] = useState([]);
-  const [question, setQuestion] = useState(null);
+  const [questionsRandoms, setQuestionRandoms] = useState<Question[]>([]);
+  const [question, setQuestion] = useState<Question | null>(null);
   const [numberQuestion, setNumberQuestion] = useState(1);
-  const [userResponse, setUserResponse] = useState(null);
+  const [userResponse, setUserResponse] = useState<number | null>(null);
 
   let navigate = useNavigate();
 
@@ -191,9 +191,9 @@ const Game = () => {
     setTimeoutId(timeoutId);
   };
 
-  const handleAnswer = (ans) => {
+  const handleAnswer = (ans: number) => {
     setUserResponse(ans);
-    if (ans === question.correct) {
+    if (ans === question?.correct) {
       increaseScore(time);
     }
     result();
@@ -235,7 +235,7 @@ const Game = () => {
       </Box>
       {question ? (
         <Text textAlign="center" color="#eee" fontSize="18px" m={4}>
-          {question.question}
+          {question.text}
         </Text>
       ) : null}
 

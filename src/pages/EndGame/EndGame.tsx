@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGameStore } from "../../store/store";
 import { Box, Button, Input, Text, useToast } from "@chakra-ui/react";
+import { Player } from "../../types";
 import CustomButton from "../../components/CustomButton/CustomButton";
 
 const EndGame = () => {
@@ -10,7 +11,7 @@ const EndGame = () => {
   const toast = useToast();
 
   const [name, setName] = useState("");
-  const [players, setPlayers] = useState([]);
+  const [players, setPlayers] = useState<Player[]>([]);
 
   let navigate = useNavigate();
 
@@ -22,7 +23,7 @@ const EndGame = () => {
     }
   }, []);
 
-  const handleChangeNameUser = (e) => {
+  const handleChangeNameUser = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
 
@@ -37,16 +38,17 @@ const EndGame = () => {
       });
       return;
     }
-    const newPlayer = {
+    const newPlayer: Player = {
       name,
       score,
     };
-    const newPlayers = players.concat(newPlayer);
+    const newPlayers: Player[] = players.concat(newPlayer);
+
     window.localStorage.setItem("players", JSON.stringify(newPlayers));
     toast({
       title: "Nombre guardado correctamente!!!",
       status: "success",
-      duration: 500,
+      duration: 1000,
       isClosable: false,
       position: "bottom-right",
     });
