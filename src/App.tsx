@@ -1,10 +1,30 @@
-import { Routes, Route } from "react-router-dom";
 import { Container } from "@chakra-ui/react";
 import Game from "./pages/Game/Game";
 import Home from "./pages/Home/Home";
 import Ranking from "./pages/Ranking/Ranking";
 import EndGame from "./pages/EndGame/EndGame";
 import "./App.css";
+
+import { createHashRouter, RouterProvider } from "react-router-dom";
+
+const router = createHashRouter([
+  {
+    path: "/",
+    element: <Home />,
+  },
+  {
+    path: "game",
+    element: <Game />,
+  },
+  {
+    path: "ranking",
+    element: <Ranking />,
+  },
+  {
+    path: "endgame",
+    element: <EndGame />,
+  },
+]);
 
 const App = () => {
   return (
@@ -16,12 +36,7 @@ const App = () => {
         h="100vh"
         centerContent={true}
       >
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="game" element={<Game />} />
-          <Route path="ranking" element={<Ranking />} />
-          <Route path="endgame" element={<EndGame />} />
-        </Routes>
+        <RouterProvider router={router} />
       </Container>
     </div>
   );

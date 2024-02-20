@@ -103,6 +103,7 @@ const Game = () => {
           {time}
         </Text>
       </Box>
+
       {question ? (
         <Text textAlign="center" color="#eee" fontSize="18px" m={4}>
           {question.text}
